@@ -18,16 +18,16 @@ Sourceforce:
 2. Copy the `atomic_densities` fold of installation package of in your `bin` fold
 3. Put the `DDEC6-slurm-run.py` in your main working fold
 4. Modify the following parameters in the script to suit your environment
-```python
-CHARGEMOL_EXEC = "/home/user/bin/Chargemol_09_26_2017_linux_parallel"
-DEFAULT_ATOMIC_DENSITIES = "/home/user/bin/atomic_densities/"
-SBATCH_CONFIG = {
-    "partition": "CPU",
-    "nodes": 1,
-    "ntasks_per_node": 4,
-    "time": "01:00:00",
-}
-```
+    ```python
+    CHARGEMOL_EXEC = "/home/user/bin/Chargemol_09_26_2017_linux_parallel"
+    DEFAULT_ATOMIC_DENSITIES = "/home/user/bin/atomic_densities/"
+    SBATCH_CONFIG = {
+        "partition": "CPU",
+        "nodes": 1,
+        "ntasks_per_node": 4,
+        "time": "01:00:00",
+    }
+    ```
 5. Prepare the executable files in the subfolder; here, we’ll use vasp as an example:
 
    Run the `VASP` program to produce the `AECCAR0`, `AECCAR2`, and `CHGCAR`, along with other files.
