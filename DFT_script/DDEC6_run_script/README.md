@@ -15,7 +15,7 @@ Sourceforce:
 
 ## Usage
 1. Compiling the `chargemol` source code
-2. Copy the `atomic_densities` fold of installation package of in your `bin` fold
+2. Copy the `atomic_densities` fold of installation package to your `bin` fold
 3. Put the `DDEC6-slurm-run.py` in your main working fold
 4. Modify the following parameters in the script to suit your environment
     ```python
