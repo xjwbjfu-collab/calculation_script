@@ -43,7 +43,7 @@ Sourceforce:
 6. Run the script using the following command `python3 DDEC6-slurm-run.py` to prepare the job submission.  After running the script, a folder named `DDEC6_run` will be created in each leaf folder containing the core electron density and valence electron density files, and all files required for the run will be copied there. The `POTCAR` file will be modified. the Chargemol job script `job_control.txt` and task submission script `submit.slurm` will then be generated.
 
 7. If you wish to prepare and submit job in batches, please run `python3 DDEC6-run.py --submit`
-Chargemol_09_26_2017_linux_parallel
+
 8. If the software cannot be compiled, please use the binary file of `Chargemol_09_26_2017_linux_parallel` in the `linux` fold of `compiled_binaries`of installation package. Place the binary file `Chargemol_09_26_2017_linux_parallel` in the user’s bin directory and grant it executable permissions.
 
 ## Citation and License information
