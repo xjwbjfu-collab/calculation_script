@@ -1,6 +1,6 @@
 # DDEC-6 Run Script
 ## chargemol
-> The `chargemol` program performs atomic population analysis to determine DDEC net atomic charges, atomic spin moments, and bond orders. Because the DDEC net atomic charges are simultaneously optimized to reproduce atomic chemical states and the electrostatic potential surrounding a material, they are well-suited for constructing force-fields used in atomistic simulations (e.g., classical molecular dynamics or Monte Carlo simulations) and for quantifying electron transfer between atoms in complex materials and during chemical reactions.
+> The `chargemol` program performs atomic population analysis to determine DDEC net atomic charges, atomic spin moments, and bond orders. Because the DDEC net atomic charges are simultaneously optimized to reproduce atomic chemical states and the electrostatic potential surrounding a material, they are well-suited for constructing force-fields used in atomistic simulations (e.g., classical molecular dynamics or Monte Carlo simulations) and for quantifying electron transfer between atoms in complex materials and during chemical reactions. [https://github.com/berquist/chargemol]
 
 ## Source code
 Github:
