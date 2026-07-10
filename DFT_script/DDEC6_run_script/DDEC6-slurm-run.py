@@ -5,7 +5,7 @@ run_ddec6_batch.py - Batch preparation of DDEC6 charge calculations (supports re
 Usage:
     ./run_ddec6_batch.py [Atomic Density Index] [--submit]
 Eg:
-    ./run_ddec6_batch.py /home/naturegogo/bin/atomic_densities/ --submit
+    ./run_ddec6_batch.py /home/user/bin/atomic_densities/ --submit
 """
 
 import os
