@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-run_ddec6_batch.py - 批量准备 DDEC6 电荷计算（支持递归查找子文件夹）
-用法:
-    ./run_ddec6_batch.py [原子密度目录] [--submit]
-示例:
+run_ddec6_batch.py - Batch preparation of DDEC6 charge calculations (supports recursive search of subfolders)
+Usage:
+    ./run_ddec6_batch.py [Atomic Density Index] [--submit]
+Eg:
     ./run_ddec6_batch.py /home/naturegogo/bin/atomic_densities/ --submit
 """
 
@@ -15,7 +15,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-# ============ 用户配置（可根据实际环境修改）============
+# ============ User configuration (may be modified to suit your specific environment)============
 CHARGEMOL_EXEC = "/home/user/bin/Chargemol_09_26_2017_linux_parallel"
 DEFAULT_ATOMIC_DENSITIES = "/home/user/bin/atomic_densities/"
 SBATCH_CONFIG = {
@@ -28,7 +28,7 @@ SBATCH_CONFIG = {
 
 
 def clean_potcar(potcar_path):
-    """删除 POTCAR 中所有包含 'SHA256' 或 'COPYR' 的行"""
+    """Delete all lines in POTCAR that contain “SHA256” or 'COPYR' 的行"""
     with open(potcar_path, 'r') as f:
         lines = f.readlines()
     with open(potcar_path, 'w') as f:
@@ -38,7 +38,7 @@ def clean_potcar(potcar_path):
 
 
 def create_job_control(run_dir, atom_dens_dir, input_filename):
-    """生成 job_control.txt"""
+    """Generate job_control.txt"""
     content = f""".true.
 .true.
 .true.
@@ -62,7 +62,7 @@ DDEC6
 
 
 def create_submit_script(run_dir, job_name, exec_path, sbatch_conf):
-    """生成 SLURM 提交脚本"""
+    """Generate a SLURM submission script"""
     script = f"""#!/bin/bash
 #SBATCH --job-name="{job_name}"
 #SBATCH --output="{job_name}.o%j.%N.out"
@@ -89,44 +89,44 @@ echo "run complete on `hostname`: `date`" 1>&2
 
 def process_folder(folder_path, atom_dens_dir, submit_flag):
     """
-    处理单个文件夹（绝对路径或 Path 对象）
+    Processing a single folder (absolute path or Path object)
     """
     folder_name = folder_path.name
-    print(f"处理文件夹：{folder_name}")
+    print(f"Process folder：{folder_name}")
 
-    # 检查必备文件
+    # Checking the required documents
     required = ["AECCAR0", "AECCAR2", "CHGCAR", "POTCAR"]
     missing = [f for f in required if not (folder_path / f).is_file()]
     if missing:
-        print(f"  警告：缺少文件 {', '.join(missing)}，跳过该文件夹")
+        print(f"  Warning: Missing file {', '.join(missing)}, skip this folder")
         return
 
-    # 创建运行目录
+    # Create a working directory
     run_dir = folder_path / "DDEC6_run"
     run_dir.mkdir(exist_ok=True)
 
-    # 复制文件
+    # Copy files
     for f in required:
         src = folder_path / f
         dst = run_dir / f
         shutil.copy2(src, dst)
-    print(f"  文件已复制到 {run_dir}")
+    print(f"  The file has been copied to {run_dir}")
 
-    # 清理 POTCAR
+    # Clean up POTCAR
     potcar_copy = run_dir / "POTCAR"
     clean_potcar(potcar_copy)
-    print("  POTCAR 已清理")
+    print("  POTCAR Cleared")
 
-    # 生成 job_control.txt
+    # Generate a job_control.txt
     create_job_control(run_dir, atom_dens_dir, folder_name)
-    print(f"  job_control.txt 已生成（基名：{folder_name}）")
+    print(f"  job_control.txt generated（Fold name：{folder_name}）")
 
-    # 生成提交脚本
+    # Generate a submission script
     job_name = f"DDEC6_{folder_name}"
     create_submit_script(run_dir, job_name, CHARGEMOL_EXEC, SBATCH_CONFIG)
-    print(f"  提交脚本已生成：{run_dir / 'submit.slurm'}")
+    print(f"  Submission script generated：{run_dir / 'submit.slurm'}")
 
-    # 若需要提交
+    # If you need to submit
     if submit_flag:
         try:
             result = subprocess.run(
@@ -137,67 +137,67 @@ def process_folder(folder_path, atom_dens_dir, submit_flag):
                 check=False
             )
             if result.returncode == 0:
-                print(f"  作业已提交（{folder_name}）")
+                print(f"  The assignment has been submitted（{folder_name}）")
             else:
-                print(f"  提交失败（{folder_name}）：{result.stderr.strip()}")
+                print(f"  Submission failed（{folder_name}）：{result.stderr.strip()}")
         except Exception as e:
-            print(f"  提交时发生异常：{e}")
+            print(f"  An exception occurred during submission：{e}")
 
     print("-" * 30)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="批量准备 DDEC6 电荷计算（递归查找所有子目录中的 VASP 文件夹）"
+        description="Batch preparation DDEC6 Charge calculation (recursive search for VASP folders in all subdirectories)"
     )
     parser.add_argument(
         "atom_dens_dir",
         nargs="?",
         default=DEFAULT_ATOMIC_DENSITIES,
-        help="原子密度目录的完整路径（默认为配置中的默认值）"
+        help="The full path to the atomic density directory (the default value is specified in the configuration)"
     )
     parser.add_argument(
         "--submit",
         action="store_true",
-        help="准备完成后立即提交所有作业"
+        help="Submit all assignments as soon as you have finished preparing them"
     )
     args = parser.parse_args()
 
     atom_dens_dir = Path(args.atom_dens_dir).resolve()
 
     atom_dens_dir_str = str(atom_dens_dir) + '/'
-    # 然后传递 atom_dens_dir_str 给 process_folder，而不是 Path 对象
+    # Then pass `atom_dens_dir_str` to `process_folder`, rather than a `Path` object
     
     if not atom_dens_dir.is_dir():
-        print(f"错误：原子密度目录不存在：{atom_dens_dir}")
+        print(f"Error: The ‘atomic density’ directory does not exist: {atom_dens_dir}")
         sys.exit(1)
 
     exec_path = Path(CHARGEMOL_EXEC)
     if not exec_path.is_file() or not os.access(exec_path, os.X_OK):
-        print(f"错误：Chargemol 可执行文件不存在或不可执行：{exec_path}")
+        print(f"Error: The Chargemol executable file does not exist or is not executable: {exec_path}")
         sys.exit(1)
 
     current_dir = Path.cwd()
-    print(f"根目录：{current_dir}")
+    print(f"Root：{current_dir}")
 
-    # 递归遍历所有子目录
+    # Recursively traverse all subdirectories
     processed_count = 0
     for dirpath, dirnames, filenames in os.walk(current_dir):
         dir_path = Path(dirpath)
-        # 跳过 DDEC6_run 目录（避免在其内部再次查找）
+        # Skip the DDEC6_run directory (to avoid searching within it again)
         if dir_path.name == "DDEC6_run":
             continue
 
-        # 检查是否同时包含四个必需文件
+        # Check that all four required files are included
         required_set = {"AECCAR0", "AECCAR2", "CHGCAR", "POTCAR"}
         if required_set.issubset(set(filenames)):
             process_folder(dir_path, atom_dens_dir_str, args.submit)
             processed_count += 1
 
-    print(f"所有文件夹处理完成！共处理 {processed_count} 个有效文件夹。")
+    print(f"All folders have been processed! A total of  {processed_count} valid folders。")
     if not args.submit:
-        print("如需提交作业，请在每个 DDEC6_run 目录中执行：sbatch submit.slurm")
-        print("或再次运行本脚本并添加 --submit 参数")
+        print("To submit your assignment, please run the following command in each DDEC6_run directory: sbatch submit.slurm")
+        print("Alternatively, run this script again and add the --submit parameter")
 
 
 if __name__ == "__main__":
